@@ -176,7 +176,7 @@ const Index = () => {
               <p className="mt-4 text-lg text-muted-foreground">
                 May your year be filled with joy, laughter, and dreams come true. May you always know how special you are to me and to everyone lucky enough to know you.
               </p>
-              <p className="mt-6 text-xl font-semibold text-primary">Happy Birthday, my crush! ❤️</p>
+              <p className="mt-6 text-xl font-semibold text-primary">Happy Birthday, Ankita! ❤️</p>
               <div className="mt-6">
                 <Button id="celebrate-btn" variant="hero" size="lg" onClick={shootConfetti}>
                   Celebrate!
