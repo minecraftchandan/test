@@ -12,17 +12,16 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden;
             font-family: 'Inter', sans-serif;
             height: 100vh;
-            touch-action: manipulation;
-             background: linear-gradient(135deg, #f9a8d4, #f3e8ff);
+            background: linear-gradient(135deg, #f9a8d4, #f3e8ff);
+            overflow: hidden;
         }
 
         #app {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             overflow: hidden;
         }
 
@@ -30,7 +29,7 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -43,7 +42,8 @@
             position: absolute;
             width: 100%;
             max-width: 800px;
-            padding: 40px;
+            max-height: 85vh;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.509);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -53,6 +53,11 @@
             transform: translateY(20px);
             transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .step.active {
@@ -168,8 +173,8 @@
 
         #cake-container {
             position: relative;
-            width: 400px;
-            height: 300px;
+            width: min(400px, 90vw);
+            height: min(300px, 40vh);
             margin: 20px auto;
             display: flex;
             align-items: center;
@@ -177,31 +182,33 @@
         }
 
         .cake-image {
-            font-size: 120px;
+            font-size: clamp(80px, 15vw, 120px);
             position: relative;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
         }
 
         .knife-image {
             position: absolute;
-            top: 50px;
-            right: 80px;
-            font-size: 60px;
+            top: clamp(30px, 8vw, 50px);
+            right: clamp(40px, 12vw, 80px);
+            font-size: clamp(40px, 8vw, 60px);
             transform: rotate(-30deg);
             cursor: pointer;
             transition: all 0.3s ease;
             filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+            touch-action: manipulation;
         }
 
-        .knife-image:hover {
+        .knife-image:hover,
+        .knife-image:active {
             transform: rotate(-30deg) scale(1.1);
             filter: drop-shadow(2px 2px 8px rgba(255, 105, 180, 0.6));
         }
 
         .slice-effect {
             position: absolute;
-            font-size: 40px;
-            top: 80px;
+            font-size: clamp(30px, 6vw, 40px);
+            top: clamp(50px, 12vw, 80px);
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
@@ -211,6 +218,71 @@
         .slice-effect.animate {
             opacity: 1;
             transform: translateX(-50%) translateY(-30px) rotate(15deg);
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .step {
+                padding: 15px;
+                max-width: 95vw;
+                max-height: 90vh;
+            }
+            
+            .cutting-instruction {
+                font-size: 0.9rem;
+                margin: 10px 0;
+            }
+            
+            #cake-message {
+                font-size: 0.9rem;
+                margin: 10px 0;
+            }
+            
+            .knife-image {
+                padding: 10px;
+                margin: -10px;
+            }
+            
+            .reason-card {
+                padding: 15px;
+                margin: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .step {
+                padding: 10px;
+                max-height: 95vh;
+            }
+            
+            .text-4xl, .text-5xl {
+                font-size: 1.8rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .text-3xl, .text-4xl {
+                font-size: 1.5rem !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .emoji {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+            
+            .reason-card {
+                padding: 10px;
+                margin: 3px;
+            }
+            
+            #progress-container {
+                top: 5px;
+                width: 90%;
+            }
+            
+            #cake-container {
+                height: min(250px, 35vh);
+            }
         }
 
         .cutting-instruction {
@@ -466,7 +538,8 @@
             const knife = document.getElementById('knife-image');
             const sliceEffect = document.getElementById('slice-effect');
             
-            knife.addEventListener('click', () => {
+            // Handle both click and touch events
+            const cutCake = () => {
                 if (!cakeCut) {
                     cakeCut = true;
                     
@@ -494,6 +567,13 @@
                         document.getElementById('next-btn-4').style.display = 'inline-block';
                     }, 1000);
                 }
+            };
+            
+            // Add both click and touch event listeners
+            knife.addEventListener('click', cutCake);
+            knife.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent double-tap zoom
+                cutCake();
             });
         }
 
